@@ -1,0 +1,20 @@
+---
+- name: Another network playbook example
+  # the line below uses regex to parse inventory file
+  hosts: ~^arista
+  # gather_facts ALWAYS runs setup.py (server module)
+  gather_facts: no
+
+  tasks:
+  # is gather_facts set to no then it will be about our network devs
+  - name: Harvest Arista facts
+    eos_facts:
+    when: ansible_network_os == 'eos'
+
+  - name: Push to local system
+    copy:
+      # use the to_nice_json filter to display pp json output
+            content: "{{ ansible_facts | to_nice_json }}"
+            dest: "/home/student/mycode/{{inventory_hostname }}.txt"
+            # the inventory_hostname variable always resolve to the current host being iterated against
+
